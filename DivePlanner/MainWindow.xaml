@@ -1,0 +1,43 @@
+﻿<Window x:Name="DivePlanner" x:Class="DivePlanner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DivePlanner"
+        mc:Ignorable="d"
+        Title="Dive Planner" Height="500" Width="750"
+        MinHeight="500" MinWidth="750">
+    <Grid x:Name="WindowGrid" >
+        <Grid x:Name="InfoGrid" >
+
+        </Grid>
+        <Grid x:Name="MenuGrid">
+            <Button Name="PointInfoButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnPointInfoButtonClick" ClickMode="Release" Content="Points info">
+            </Button>
+
+            <Button Name="AddPointButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnAddPointButtonClick" ClickMode="Release" Content="Add points">
+            </Button>
+
+            <Button Name="DeletePointButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnDeletePointButtonClick" ClickMode="Release" Content="Delete points">
+            </Button>
+        </Grid>
+        <Grid x:Name="GraphGrid">
+            <Button Name="MenuButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnMenuButtonClick" ClickMode="Release" Content="-&gt;">
+            </Button>
+
+            <Button Name="InfoButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnInfoButtonClick" ClickMode="Release" Content="&lt;-">
+                
+            </Button>
+        </Grid>
+    </Grid>
+</Window>
