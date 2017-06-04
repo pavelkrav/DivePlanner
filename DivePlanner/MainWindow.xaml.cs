@@ -82,6 +82,16 @@ namespace DivePlanner
 			}
 		}
 
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+			//if (ClickMethod == ClickMethods.AddPoint)
+			//{
+			//	DrawGraphGrid();
+			//	DrawProjections();
+			//}
+		}
+
 		private double GetTimeCoordinate()
 		{
 			double positiveField = TimeBeadLength * 10;
@@ -136,9 +146,7 @@ namespace DivePlanner
 			WindowGrid.Width = Width - 16;
 
 			DrawInfoGrid();
-
 			DrawMenuGrid();
-
 			DrawGraphGrid();
 		}
 
@@ -147,6 +155,52 @@ namespace DivePlanner
 			InfoGrid.Width = WindowGrid.Width / 5;
 			InfoGrid.HorizontalAlignment = HorizontalAlignment.Right;
 			InfoGrid.VerticalAlignment = VerticalAlignment.Stretch;
+			InfoGrid.Height = WindowGrid.Height;
+
+			double buttonsLeftIndent = InfoGrid.Width * 0.15 / 2;
+			double buttonsHeight = 25;
+			double buttonsTopIndent = 15;
+
+			CalculateAcsentButton.Width = InfoGrid.Width - buttonsLeftIndent * 2;
+			CalculateAcsentButton.Height = buttonsHeight;
+			CalculateAcsentButton.HorizontalAlignment = HorizontalAlignment.Center;
+			CalculateAcsentButton.Margin = new Thickness(buttonsLeftIndent, buttonsTopIndent, buttonsLeftIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 1);
+			CalculateAcsentButton.Background = Brushes.LightGray;
+			if (SelectedPoint < 0)
+				CalculateAcsentButton.IsEnabled = false;
+			else CalculateAcsentButton.IsEnabled = true;
+
+			CalculateEmergencyAcsentButton.Width = InfoGrid.Width * 0.85;
+			CalculateEmergencyAcsentButton.Height = 25;
+			CalculateEmergencyAcsentButton.HorizontalAlignment = HorizontalAlignment.Center;
+			CalculateEmergencyAcsentButton.Margin = new Thickness(buttonsLeftIndent, buttonsTopIndent * 2 + buttonsHeight, buttonsLeftIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 2);
+			CalculateEmergencyAcsentButton.Background = Brushes.LightGray;
+			if (SelectedPoint < 0)
+				CalculateEmergencyAcsentButton.IsEnabled = false;
+			else CalculateEmergencyAcsentButton.IsEnabled = true;
+
+			double textBoxLeftIndent = InfoGrid.Width / 2;
+			double textBoxRightIndent = buttonsLeftIndent;
+
+			if (SelectedPoint > 0)
+				TimeTextBox.Text = (_dive.DivePoints[SelectedPoint].Time / 60).ToString("F2");
+			else TimeTextBox.Text = "";
+			TimeTextBox.Margin = new Thickness(textBoxLeftIndent + 2, buttonsTopIndent * 4 + buttonsHeight * 3, textBoxRightIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 4);
+			TimeTextBoxLabel.Margin = new Thickness(textBoxRightIndent, buttonsTopIndent * 4 + buttonsHeight * 3, InfoGrid.Width - textBoxLeftIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 4);
+
+			if (SelectedPoint > 0)
+				DepthTextBox.Text = _dive.DivePoints[SelectedPoint].Depth.ToString("F2");
+			else DepthTextBox.Text = "";
+			DepthTextBox.Margin = new Thickness(textBoxLeftIndent + 2, buttonsTopIndent * 5 + buttonsHeight * 4, textBoxRightIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 5);
+			DepthTextBoxLabel.Margin = new Thickness(textBoxRightIndent, buttonsTopIndent * 5 + buttonsHeight * 4, InfoGrid.Width - textBoxLeftIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 5);
+
+			ApplyPointButton.Margin = new Thickness(textBoxLeftIndent + 2, buttonsTopIndent * 6 + buttonsHeight * 5, textBoxRightIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 6);
+			if (SelectedPoint < 0)
+				ApplyPointButton.IsEnabled = false;
+			else ApplyPointButton.IsEnabled = true;
+
+			AddPointByInfoButton.Margin = new Thickness(buttonsLeftIndent, buttonsTopIndent * 6 + buttonsHeight * 5, textBoxLeftIndent + 2, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 6);
+
 		}
 
 		private void DrawMenuGrid()
@@ -248,6 +302,26 @@ namespace DivePlanner
 
 		}
 
+		private void DrawProjections()
+		{
+			double time = GetTimeCoordinate();
+			double depth = GetDepthCoordinate();
+			if (time >= 0 && depth >= 0)
+			{
+				double x = Mouse.GetPosition(GraphGrid).X;
+				double y = Mouse.GetPosition(GraphGrid).Y;
+				Line timeProjection = new Line();
+				timeProjection.X1 = x;
+				timeProjection.Y1 = y;
+				timeProjection.X2 = x;
+				timeProjection.Y2 = TimeAxisIndent();
+				timeProjection.Stroke = Brushes.Red;
+				timeProjection.StrokeThickness = 1;
+				timeProjection.Opacity = 0.5;
+				GraphGrid.Children.Add(timeProjection);
+			}
+		}
+
 		private void DrawGraphic()
 		{
 			DivePoint previous = _dive.DivePoints[0];
@@ -305,7 +379,6 @@ namespace DivePlanner
 			if (ClickMethod == ClickMethods.DeletePoint)
 			{
 				_dive.RemovePoint(time, depth);
-				DrawGraphGrid();
 			}
 			else if (ClickMethod == ClickMethods.PointInfo)
 			{
@@ -318,8 +391,9 @@ namespace DivePlanner
 					}
 				}
 				else SelectedPoint = -1;
-				DrawGraphGrid();				
+				DrawInfoGrid();
 			}
+			DrawGraphGrid();
 		}
 
 		private double DepthAxisIndent()
@@ -398,20 +472,20 @@ namespace DivePlanner
 					Cursor = Cursors.Arrow,
 					Focusable = false
 				};
-				//int hours = (int)Math.Round(_dive.Length / 10 * i) / 3600;
-				//int minutes = (int)Math.Round(_dive.Length / 10 * i) % 3600 / 60;
-				//text.Text = $"{hours}:{minutes}";
 				if (i != 10)
-					text.Text = Math.Round(_dive.TimeLength / 10 * i).ToString("F0");
+					text.Text = Math.Round(_dive.TimeLength / 10 * i / 60).ToString("F0");
 				else
-					text.Text = "t, sec";
+					text.Text = "t, min";
 				text.FontWeight = FontWeights.Bold;
 				textCanvas.Children.Add(text);
 				textCanvas.Width = text.Text.Length * text.FontSize / 2;
 				textCanvas.Height = text.FontSize;
 				double left = timeBead.X1 - textCanvas.Width / 3 * 2 - 1;
 				double top = timeBead.Y1 - 6 - textCanvas.Height;
-				textCanvas.Margin = new Thickness(left, top, GraphGrid.Width - left, GraphGrid.Height - top);
+				if (i != 10)
+					textCanvas.Margin = new Thickness(left, top, GraphGrid.Width - left, GraphGrid.Height - top);
+				else
+					textCanvas.Margin = new Thickness(left - 2, top, GraphGrid.Width - left + 2, GraphGrid.Height - top);
 				GraphGrid.Children.Add(textCanvas);
 			}
 
@@ -493,6 +567,7 @@ namespace DivePlanner
 				{
 					OnMenuButtonClick(this, new RoutedEventArgs());
 				}
+				OnPointInfoButtonClick(this, new RoutedEventArgs());
 			}
 			DrawGraphGrid();
 		}
@@ -500,7 +575,6 @@ namespace DivePlanner
 		private void OnPointInfoButtonClick(object sender, RoutedEventArgs e)
 		{
 			ClickMethod = ClickMethods.PointInfo;
-			SelectedPoint = -1;
 			DrawWindow();
 		}
 
@@ -515,6 +589,57 @@ namespace DivePlanner
 		{
 			ClickMethod = ClickMethods.DeletePoint;
 			SelectedPoint = -1;
+			DrawWindow();
+		}
+
+		private void OnCalculateAcsentButtonClick(object sender, RoutedEventArgs e)
+		{
+			
+			DrawWindow();
+		}
+
+		private void OnCalculateEmergencyAcsentButtonClick(object sender, RoutedEventArgs e)
+		{
+			
+			DrawWindow();
+		}		
+
+		private void OnApplyPointButtonClick(object sender, RoutedEventArgs e)
+		{
+			double time = Convert.ToDouble(TimeTextBox.Text) * 60;
+			double depth = Convert.ToDouble(DepthTextBox.Text);
+			if (_dive.GetListNumber(time, depth) < 0)
+			{
+				_dive.DivePoints[SelectedPoint].Depth = depth;
+				_dive.DivePoints[SelectedPoint].Time = time;
+
+				if (_dive.MaxDepth < depth)
+					_dive.MaxDepth = depth;
+				if (_dive.TimeLength < time)
+					_dive.TimeLength = time;
+			}
+			DrawWindow();
+		}
+
+		private void OnAddPointByInfoButtonClick(object sender, RoutedEventArgs e)
+		{
+			double time = Convert.ToDouble(TimeTextBox.Text) * 60;
+			double depth = Convert.ToDouble(DepthTextBox.Text);
+			if (_dive.GetListNumber(time, depth) < 0)
+			{
+				_dive.DivePoints.Add(new DivePoint(time, depth));
+				_dive.OrderDivePoints();
+				SelectedPoint = _dive.GetListNumber(time, depth);
+
+				if (_dive.MaxDepth < depth)
+					_dive.MaxDepth = depth;
+				if (_dive.TimeLength < time)
+					_dive.TimeLength = time;
+			}
+			else
+			{
+				SelectedPoint = _dive.GetListNumber(time, depth);
+			}
 			DrawWindow();
 		}
 	}

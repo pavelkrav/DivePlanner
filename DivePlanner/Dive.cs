@@ -35,6 +35,45 @@ namespace DivePlanner
 
 		}
 
+		public Dive(int test)
+		{
+			if (test == 1)
+			{
+				Site = new DiveSite();
+				MaxDepth = 50;
+				TimeLength = 6000;
+
+				DivePoints = new List<DivePoint>();
+				DivePoints.Add(new DivePoint(0, 0));
+				DivePoints.Add(new DivePoint(135, 45));
+				DivePoints.Add(new DivePoint(1935, 45));
+				DivePoints.Add(new DivePoint(1980, 30));
+				DivePoints.Add(new DivePoint(5580, 30));
+			}
+			if (test == 2)
+			{
+				Site = new DiveSite();
+				MaxDepth = 50;
+				TimeLength = 200 * 60;
+
+				DivePoints = new List<DivePoint>();
+				DivePoints.Add(new DivePoint(0, 0));
+				DivePoints.Add(new DivePoint(135, 45));
+				DivePoints.Add(new DivePoint(1935, 45));
+				DivePoints.Add(new DivePoint(1980, 30));
+				DivePoints.Add(new DivePoint(5580, 30));
+				DivePoints.Add(new DivePoint(94.8 * 60, 12));
+				DivePoints.Add(new DivePoint(96.8 * 60, 12));
+				DivePoints.Add(new DivePoint(97.1 * 60, 9));
+				DivePoints.Add(new DivePoint(114.1 * 60, 9));
+				DivePoints.Add(new DivePoint(114.4 * 60, 6));
+				DivePoints.Add(new DivePoint(143.4 * 60, 6));
+				DivePoints.Add(new DivePoint(143.7 * 60, 3));
+				DivePoints.Add(new DivePoint(197.7 * 60, 3));
+				DivePoints.Add(new DivePoint(198 * 60, 0));
+			}
+		}
+
 		public Dive()
 		{
 			Site = new DiveSite();

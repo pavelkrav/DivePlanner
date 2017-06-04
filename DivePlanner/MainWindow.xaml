@@ -9,7 +9,31 @@
         MinHeight="500" MinWidth="750">
     <Grid x:Name="WindowGrid" >
         <Grid x:Name="InfoGrid" >
+            <Button Name="CalculateAcsentButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnCalculateAcsentButtonClick" ClickMode="Release" Content="Calculate ascent">
+            </Button>
 
+            <Button Name="CalculateEmergencyAcsentButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnCalculateEmergencyAcsentButtonClick" ClickMode="Release" Content="Emergency ascent">
+            </Button>
+
+            <Label Name="DepthTextBoxLabel">Depth</Label>
+            <TextBox Name="DepthTextBox"></TextBox>
+
+            <Label Name="TimeTextBoxLabel">Time</Label>
+            <TextBox Name="TimeTextBox"></TextBox>
+
+            <Button Name="ApplyPointButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnApplyPointButtonClick" ClickMode="Release" Content="Apply">
+            </Button>
+
+            <Button Name="AddPointByInfoButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnAddPointByInfoButtonClick" ClickMode="Release" Content="Add">
+            </Button>
         </Grid>
         <Grid x:Name="MenuGrid">
             <Button Name="PointInfoButton" Background="LightGray" 
