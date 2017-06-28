@@ -250,6 +250,26 @@ namespace DivePlanner
 				DeletePointButton.BorderThickness = new Thickness(1);
 				DeletePointButton.BorderBrush = Brushes.LightGray;
 			}
+
+			double textBoxLeftIndent = MenuGrid.Width / 2;
+			double textBoxRightIndent = buttonsLeftIndent;
+
+			MaxDepthTextBox.Text = _dive.MaxDepth.ToString("F2");
+			MaxDepthTextBox.Margin = new Thickness(textBoxLeftIndent + 2, buttonsTopIndent * 5 + buttonsHeight * 4, textBoxRightIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 5);
+			MaxDepthTextBoxLabel.Margin = new Thickness(textBoxRightIndent, buttonsTopIndent * 5 + buttonsHeight * 4, InfoGrid.Width - textBoxLeftIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 5);
+
+			MaxTimeTextBox.Text = _dive.TimeLength.ToString("F2");
+			MaxTimeTextBox.Margin = new Thickness(textBoxLeftIndent + 2, buttonsTopIndent * 6 + buttonsHeight * 5, textBoxRightIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 6);
+			MaxTimeTextBoxLabel.Margin = new Thickness(textBoxRightIndent, buttonsTopIndent * 6 + buttonsHeight * 5, InfoGrid.Width - textBoxLeftIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 6);
+
+			AltitudeTextBox.Text = _dive.Site.Altitude.ToString("F2");
+			AltitudeTextBox.Margin = new Thickness(textBoxLeftIndent + 2, buttonsTopIndent * 7 + buttonsHeight * 6, textBoxRightIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 7);
+			AltitudeTextBoxLabel.Margin = new Thickness(textBoxRightIndent, buttonsTopIndent * 7 + buttonsHeight * 6, InfoGrid.Width - textBoxLeftIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 7);
+
+			UpdateDiveInfoButton.Margin = new Thickness(textBoxLeftIndent + 2, buttonsTopIndent * 8 + buttonsHeight * 7, textBoxRightIndent, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 8);
+
+			RestrictDiveInfoButton.Margin = new Thickness(buttonsLeftIndent, buttonsTopIndent * 8 + buttonsHeight * 7, textBoxLeftIndent + 2, InfoGrid.Height - (buttonsTopIndent + buttonsHeight) * 8);
+
 		}
 
 		private void DrawGraphGrid()
@@ -304,6 +324,7 @@ namespace DivePlanner
 
 		private void DrawProjections()
 		{
+			GC.Collect(5);
 			double time = GetTimeCoordinate();
 			double depth = GetDepthCoordinate();
 			if (time >= 0 && depth >= 0)
@@ -658,6 +679,37 @@ namespace DivePlanner
 			{
 				SelectedPoint = _dive.GetListNumber(time, depth);
 			}
+			DrawWindow();
+		}
+
+		private void OnUpdateDiveInfoButtonClick(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				_dive.MaxDepth = Convert.ToDouble(MaxDepthTextBox.Text);
+				_dive.TimeLength = Convert.ToDouble(MaxTimeTextBox.Text);
+				_dive.Site.Altitude = Convert.ToDouble(AltitudeTextBox.Text);
+			}
+			catch (Exception) {; }
+			DrawWindow();
+		}
+
+		private void OnRestrictDiveInfoButtonClick(object sender, RoutedEventArgs e)
+		{
+			double timeLength = _dive.DivePoints[_dive.DivePoints.Count - 1].Time;
+			double maxDepth = -1;
+			foreach (DivePoint dp in _dive.DivePoints)
+			{
+				maxDepth = dp.Depth > maxDepth ? dp.Depth : maxDepth;
+			}
+			maxDepth = Math.Ceiling(maxDepth);
+			if (maxDepth < 30)
+				maxDepth = 30;
+			timeLength = Math.Ceiling(timeLength);
+			if (timeLength < 1800)
+				timeLength = 1800;
+			_dive.MaxDepth = maxDepth;
+			_dive.TimeLength = timeLength;
 			DrawWindow();
 		}
 	}

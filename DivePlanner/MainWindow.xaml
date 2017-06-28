@@ -50,6 +50,25 @@
              BorderBrush="Black" BorderThickness="0" 
              Click="OnDeletePointButtonClick" ClickMode="Release" Content="Delete points">
             </Button>
+
+            <Label Name="MaxDepthTextBoxLabel">Max.Depth</Label>
+            <TextBox Name="MaxDepthTextBox"></TextBox>
+
+            <Label Name="MaxTimeTextBoxLabel">Time</Label>
+            <TextBox Name="MaxTimeTextBox"></TextBox>
+
+            <Label Name="AltitudeTextBoxLabel">Altitude</Label>
+            <TextBox Name="AltitudeTextBox"></TextBox>
+
+            <Button Name="UpdateDiveInfoButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnUpdateDiveInfoButtonClick" ClickMode="Release" Content="Update">
+            </Button>
+
+            <Button Name="RestrictDiveInfoButton" Background="LightGray" 
+             BorderBrush="Black" BorderThickness="0" 
+             Click="OnRestrictDiveInfoButtonClick" ClickMode="Release" Content="Restrict">
+            </Button>
         </Grid>
         <Grid x:Name="GraphGrid">
             <Button Name="MenuButton" Background="LightGray" 
