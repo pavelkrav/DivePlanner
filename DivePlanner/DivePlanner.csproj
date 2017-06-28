@@ -76,6 +76,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CompartmentParams.cs" />
     <Compile Include="Dive.cs" />
     <Compile Include="DivePoint.cs" />
     <Compile Include="GasMix.cs" />

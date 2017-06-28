@@ -343,6 +343,9 @@ namespace DivePlanner
 			twoPointLine.Y2 = TimeAxisIndent() + p2.Depth / (_dive.MaxDepth / 10) * DepthBeadLength;
 			twoPointLine.Stroke = Brushes.Red;
 			twoPointLine.StrokeThickness = 1;
+			int index = _dive.GetListNumber(p2.Time, p2.Depth);
+			if (!_dive.PointAvailable(index))
+				twoPointLine.StrokeDashArray = new DoubleCollection() {5, 5};
 			GraphGrid.Children.Add(twoPointLine);
 		}
 
@@ -594,13 +597,21 @@ namespace DivePlanner
 
 		private void OnCalculateAcsentButtonClick(object sender, RoutedEventArgs e)
 		{
-			
+			if (SelectedPoint > 0)
+			{
+				_dive.GetAscentByIndex(SelectedPoint);
+				int count = _dive.DivePoints.Count - 1;
+				_dive.TimeLength = _dive.DivePoints[count].Time;
+			}
 			DrawWindow();
 		}
 
 		private void OnCalculateEmergencyAcsentButtonClick(object sender, RoutedEventArgs e)
 		{
-			
+			if (SelectedPoint > 0)
+			{
+				MessageBox.Show(_dive.EmergencyAscentMessage(SelectedPoint));
+			}
 			DrawWindow();
 		}		
 
@@ -623,8 +634,15 @@ namespace DivePlanner
 
 		private void OnAddPointByInfoButtonClick(object sender, RoutedEventArgs e)
 		{
-			double time = Convert.ToDouble(TimeTextBox.Text) * 60;
-			double depth = Convert.ToDouble(DepthTextBox.Text);
+			double time = 0;
+			double depth = 0;
+			try
+			{
+				time = Convert.ToDouble(TimeTextBox.Text) * 60;
+				depth = Convert.ToDouble(DepthTextBox.Text);
+			}
+			catch (Exception) {; }
+
 			if (_dive.GetListNumber(time, depth) < 0)
 			{
 				_dive.DivePoints.Add(new DivePoint(time, depth));
