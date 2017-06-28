@@ -1,2 +1,3 @@
 # DivePlanner
-Dive Planner for desktop
+Dive planner for Windows desktop
+in collaboration with Ilya Alferenkov
